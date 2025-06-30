@@ -60,17 +60,17 @@ embeddings_hra = np.array(embeddings_hra)
 embeddings_response_hra = np.array(embeddings_response_hra)
 
 ### important functions ###
-def _make_client(api_key: str):
+def _make_client(api_key):
     if not api_key:
         raise ValueError("You must pass your OpenAI API key via `api_key`.")
     return OpenAI(api_key=api_key)
 
-def get_embedding(text, model="text-embedding-3-large"):
-    text = text.replace("\n", " ")
-    return client.embeddings.create(input = [text], model=model).data[0].embedding
+def _get_embedding(text, client, model="text-embedding-3-large"):
+    txt = text.replace("\n", " ")
+    return client.embeddings.create(input=[txt], model=model).data[0].embedding
 
-def find_closest_cell_type(arbitrary_name,mode = 'simple', background = 'CL'):
-    arbitrary_embedding = get_embedding(arbitrary_name,"text-embedding-3-large")
+def find_closest_cell_type(name,client,mode = 'simple', background = 'CL'):
+    target = _get_embedding(name,client,"text-embedding-3-large")
     closest_name = None
     closest_distance = float('inf')
     
@@ -91,7 +91,7 @@ def find_closest_cell_type(arbitrary_name,mode = 'simple', background = 'CL'):
         labels = hra_cell_type
     
     for cell_type, embedding in zip(labels, eb):
-        distance = cosine(arbitrary_embedding, embedding)
+        distance = cosine(target, embedding)
         if distance < closest_distance:
             closest_distance = distance
             closest_name = cell_type
@@ -107,7 +107,7 @@ def get_response(prompt):
     )
     return response.choices[0].message.content.strip()
 
-def GCTHarmony(input_cell_type,mode = 'simple',background = 'HRA',api_key=None):
+def GCTHarmony(input_cts,mode = 'simple',background = 'HRA',api_key=None):
 
     client = _make_client(api_key)
     out = []

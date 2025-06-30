@@ -1,0 +1,28 @@
+Metadata-Version: 2.2
+Name: GCTHarmony
+Version: 0.1.0
+Summary: LLM-based Cell Type Annotation Harmonization Tool
+Home-page: https://github.com/Xingyuan-Zhang/GCTHarmony
+Author: Xingyuan Zhang
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: owlready2
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: umap-learn
+Requires-Dist: matplotlib
+Requires-Dist: rdflib
+Requires-Dist: scipy
+Requires-Dist: openai
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+GCTHarmony: an LLM-based cell type annotation harmonization across single-cell studies

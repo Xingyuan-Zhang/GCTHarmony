@@ -1,0 +1,8 @@
+owlready2
+numpy
+pandas
+umap-learn
+matplotlib
+rdflib
+scipy
+openai
