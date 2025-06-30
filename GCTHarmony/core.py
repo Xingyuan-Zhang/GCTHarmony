@@ -60,6 +60,11 @@ embeddings_hra = np.array(embeddings_hra)
 embeddings_response_hra = np.array(embeddings_response_hra)
 
 ### important functions ###
+def _make_client(api_key: str):
+    if not api_key:
+        raise ValueError("You must pass your OpenAI API key via `api_key`.")
+    return OpenAI(api_key=api_key)
+
 def get_embedding(text, model="text-embedding-3-large"):
     text = text.replace("\n", " ")
     return client.embeddings.create(input = [text], model=model).data[0].embedding
@@ -102,36 +107,19 @@ def get_response(prompt):
     )
     return response.choices[0].message.content.strip()
 
-def GPTcelltype_standarlizer(input_cell_type,mode = 'simple',background = 'HRA'):
-    
-    output_cell_type = []
-    
-    if mode == 'simple':
-        for ct in input_cell_type:
-            gpt_ct = str(find_closest_cell_type(ct, mode, background)[0])
-            output_cell_type.append(gpt_ct)
-            
-    elif mode == 'complex':
-        for ct in input_cell_type:
-            ct_response = get_response(ct)
-            gpt_ct = str(find_closest_cell_type(ct_response, mode, background)[0])
-            output_cell_type.append(gpt_ct)
+def GCTHarmony(input_cell_type,mode = 'simple',background = 'HRA',api_key=None):
 
-    return output_cell_type
+    client = _make_client(api_key)
+    out = []
+    for ct in input_cts:
+        if mode == 'simple':
+            mapped, _ = find_closest_cell_type(ct, client, mode, background)
+
+        elif mode == 'complex':
+            descr     = get_response(ct, client)
+            mapped, _ = find_closest_cell_type(descr, client, mode, background)
+        out.append(mapped)
+    return out
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description="Map arbitrary cell-type names to CL terms using OpenAI embeddings"
-    )
-    parser.add_argument(
-        '-k', '--api-key',
-        required=True,
-        help='Your OpenAI API key'
-    )
-    args = parser.parse_args()
-
-    client = OpenAI(api_key=args.api_key)
-
-    test_name = "Kupffer cell"
-    mapped, dist = find_closest_cell_type(test_name)
-    print(f"'{test_name}' → '{mapped}'  (cosine distance {dist:.3f})")
+    pass
