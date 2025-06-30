@@ -1,4 +1,4 @@
- from owlready2 import get_ontology
+from owlready2 import get_ontology
 import re
 import numpy as np
 import pandas as pd
