@@ -37,7 +37,7 @@ GCTHarmony is not a free package to be used. An OpanAI API key is needed for run
 >>> set_api_key('Your OpenAI API Key')
 ```
 
-First module: Mapping cell type names to CL terms
+### First module: Mapping cell type names to CL terms
 
 Example: 
 ```python
@@ -46,7 +46,7 @@ Example:
 ['T cell']
 ```
 
-Second module: reconcilling hierarchical discrepancies
+### Second module: reconcilling hierarchical discrepancies
 
 Example: 
 ```python
@@ -55,7 +55,8 @@ Example:
 (['T cell'], ['T cell'])
 ```
 ---
-## Introduction
+## Introduction  
+
 GCTHarmony is an LLM-based method for harmonizing cell type annotations across single-cell
 studies. Utilizing OpenAI’s text embedding model, GCTHarmony accurately maps arbitrary cell type annotations to standardized
 cell ontology terms and reconciles discrepancies in annotation hierarchies across studies. 
