@@ -32,7 +32,7 @@ pip install -e .
 
 GCTHarmony is not a free package to be used. An OpanAI API key is needed for running GCTHarmony first module. Setup the API key first before calling the first module of GCTHarmony. 
 
-```bash
+```python
 >>> from GCTHarmony.first_module import set_api_key
 >>> set_api_key('Your OpenAI API Key')
 ```
