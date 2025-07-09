@@ -43,30 +43,18 @@ Example:
 >>> GCTHarmony(['T-cells'], mode='two-step', background='HRA')
 ['T cell']
 ```
+
+Second module: reconcilling hierarchical discrepancies
+Example: 
+```bash
+>>> from GCTHarmony.second_module import merge_cell_types
+>>> merge_cell_types(['CD4-positive, alpha-beta T cell'],['T cell'])
+(['T cell'], ['T cell'])
+```
 ---
-
-## API Reference
-
-* `GCTHarmony(ontology_path: str, datasets: dict)`: Constructor that loads the ontology and datasets.
-* `map_annotations() -> dict`: Returns a dictionary of mapped annotations keyed by dataset name.
-* `evaluate_consistency(mapped: dict) -> pandas.DataFrame`: Returns a DataFrame of consistency evaluation metrics.
-
-> For detailed usage and additional parameters, see the [documentation](./docs).
-
----
-
 ## Citation
 
-If you use **iGCTHarmony** in your research, please cite:
-
-```bibtex
-@article{zhang2025gctharmony,
-  title={GCTHarmony: Harmonizing cell type annotations across single-cell studies},
-  author={Zhang, Xingyuan and Ji, Jason},
-  journal={Bioinformatics},
-  year={2025}
-}
-```
+If you use **GCTHarmony** in your research, please cite:
 
 ---
 
