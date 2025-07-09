@@ -60,5 +60,5 @@ If you use **GCTHarmony** in your research, please cite:
 
 ## Contact
 
-* **Email**: [xingyuan.zhang@duke.edu](mailto:xingyuan.zhang@duke.edu)
+* **Authors**: Xingyuan Zhang([xingyuan.zhang@duke.edu](mailto:xingyuan.zhang@duke.edu)), Zhicheng Ji([zhicheng.ji@duke.edu](mailto:zhicheng.ji@duke.edu))
 * **GitHub**: [Xingyuan-Zhang](https://github.com/Xingyuan-Zhang)
