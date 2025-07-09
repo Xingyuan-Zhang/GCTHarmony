@@ -1,9 +1,9 @@
-from .core import (
+from .first_module import (
     GCTHarmony,
     
 )
 
-from .CLhierarchy import (
+from .second_module import (
     traverse_subclasses,
     get_parent_cell_types_by_name,
     get_all_subclasses,

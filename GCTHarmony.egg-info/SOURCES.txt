@@ -1,8 +1,9 @@
 README.md
 setup.py
-GCTHarmony/CLhierarchy.py
 GCTHarmony/__init__.py
-GCTHarmony/core.py
+GCTHarmony/config.py
+GCTHarmony/first_module.py
+GCTHarmony/second_module.py
 GCTHarmony.egg-info/PKG-INFO
 GCTHarmony.egg-info/SOURCES.txt
 GCTHarmony.egg-info/dependency_links.txt

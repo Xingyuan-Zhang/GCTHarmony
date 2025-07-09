@@ -9,9 +9,7 @@ import os
 from matplotlib.lines import Line2D
 from scipy.spatial.distance import cosine
 from openai import OpenAI
-import argparse
-
-client: OpenAI = None
+from .config import load_openai_key
 
 data_dir = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', 'data')
@@ -60,33 +58,45 @@ embeddings_hra = np.array(embeddings_hra)
 embeddings_response_hra = np.array(embeddings_response_hra)
 
 ### important functions ###
-def _make_client(api_key):
-    if not api_key:
-        raise ValueError("You must pass your OpenAI API key via `api_key`.")
-    return OpenAI(api_key=api_key)
+def set_api_key(api_key: str):
+    """
+    Store the OpenAI API key in the environment so that
+    subsequent calls to any function in this package will use it.
+    """
+    os.environ["OPENAI_API_KEY"] = api_key.strip()
+
+def _get_client():
+    key = os.getenv("OPENAI_API_KEY")
+    if not key:
+        raise ValueError(
+            "OpenAI API key not set.  "
+            "Call `set_api_key(your_key)` first."
+        )
+    return OpenAI(api_key=key)
 
 def _get_embedding(text, client, model="text-embedding-3-large"):
     txt = text.replace("\n", " ")
     return client.embeddings.create(input=[txt], model=model).data[0].embedding
 
-def find_closest_cell_type(name,client,mode = 'simple', background = 'CL'):
+def find_closest_cell_type(name,mode = 'two-step', background = 'CL'):
+    client = _get_client()
     target = _get_embedding(name,client,"text-embedding-3-large")
     closest_name = None
     closest_distance = float('inf')
     
-    if mode == 'simple' and background == 'CL':
+    if mode == 'one-step' and background == 'CL':
         eb = embeddings 
         labels = labels_all
 
-    elif mode == 'simple' and background == 'HRA':
+    elif mode == 'one-step' and background == 'HRA':
         eb = embeddings_hra 
         labels = hra_cell_type
         
-    elif mode == 'complex' and background == 'CL':
+    elif mode == 'two-step' and background == 'CL':
         eb = embeddings_response 
         labels = labels_all
 
-    elif mode == 'complex' and background == 'HRA':
+    elif mode == 'two-step' and background == 'HRA':
         eb = embeddings_response_hra 
         labels = hra_cell_type
     
@@ -99,6 +109,7 @@ def find_closest_cell_type(name,client,mode = 'simple', background = 'CL'):
     return closest_name, closest_distance
 
 def get_response(prompt):
+    client = _get_client()
     response = client.chat.completions.create(
         model="gpt-4o-2024-08-06",  # Specify the GPT model you want to use
         messages=[
@@ -107,17 +118,17 @@ def get_response(prompt):
     )
     return response.choices[0].message.content.strip()
 
-def GCTHarmony(input_cts,mode = 'simple',background = 'HRA',api_key=None):
+def GCTHarmony(input_cts,mode = 'two-step',background = 'HRA'):
 
-    client = _make_client(api_key)
+    client = _get_client()
     out = []
     for ct in input_cts:
-        if mode == 'simple':
-            mapped, _ = find_closest_cell_type(ct, client, mode, background)
+        if mode == 'one-step':
+            mapped, _ = find_closest_cell_type(ct, mode, background)
 
-        elif mode == 'complex':
-            descr     = get_response(ct, client)
-            mapped, _ = find_closest_cell_type(descr, client, mode, background)
+        elif mode == 'two-step':
+            descr     = get_response(ct)
+            mapped, _ = find_closest_cell_type(descr, mode, background)
         out.append(mapped)
     return out
 

@@ -1,6 +1,7 @@
-from owlready2 import get_ontology
+from owlready2 import get_ontology, ThingClass
 import re
 import os
+from collections import deque
 
 data_dir = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..', 'data')
