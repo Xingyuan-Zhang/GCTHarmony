@@ -57,9 +57,11 @@ Example:
 ---
 ## Introduction  
 
+
 GCTHarmony is an LLM-based method for harmonizing cell type annotations across single-cell
 studies. Utilizing OpenAI’s text embedding model, GCTHarmony accurately maps arbitrary cell type annotations to standardized
 cell ontology terms and reconciles discrepancies in annotation hierarchies across studies. 
+
 ---
 ## Citation
 
