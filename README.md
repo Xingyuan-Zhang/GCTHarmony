@@ -36,9 +36,10 @@ GCTHarmony is not a free package to be used. An OpanAI API key is needed for run
 >>> from GCTHarmony.first_module import set_api_key
 >>> set_api_key('Your OpenAI API Key')
 ```
+
 First module: Mapping cell type names to CL terms
 Example: 
-```bash
+```python
 >>> from GCTHarmony.first_module import GCTHarmony
 >>> GCTHarmony(['T-cells'], mode='two-step', background='HRA')
 ['T cell']
@@ -46,7 +47,7 @@ Example:
 
 Second module: reconcilling hierarchical discrepancies
 Example: 
-```bash
+```python
 >>> from GCTHarmony.second_module import merge_cell_types
 >>> merge_cell_types(['CD4-positive, alpha-beta T cell'],['T cell'])
 (['T cell'], ['T cell'])
