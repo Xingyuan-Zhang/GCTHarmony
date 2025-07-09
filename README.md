@@ -38,6 +38,7 @@ GCTHarmony is not a free package to be used. An OpanAI API key is needed for run
 ```
 
 First module: Mapping cell type names to CL terms
+
 Example: 
 ```python
 >>> from GCTHarmony.first_module import GCTHarmony
@@ -46,6 +47,7 @@ Example:
 ```
 
 Second module: reconcilling hierarchical discrepancies
+
 Example: 
 ```python
 >>> from GCTHarmony.second_module import merge_cell_types
