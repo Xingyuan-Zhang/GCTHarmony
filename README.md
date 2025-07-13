@@ -13,7 +13,7 @@ pip install GCTHarmony
 ### From GitHub (development version)
 
 ```bash
-pip install git@github.com:Xingyuan-Zhang/GCTHarmony.git
+pip install git+ssh://git@github.com/Xingyuan-Zhang/GCTHarmony.git@main
 ```
 
 ### Local Development Mode
