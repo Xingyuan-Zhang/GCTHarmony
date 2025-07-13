@@ -16,7 +16,7 @@ pip install GCTHarmony
 pip install git+ssh://git@github.com/Xingyuan-Zhang/GCTHarmony.git@main
 ```
 
-### Local Development Mode
+### Local Development Mode (Recommended)
 
 ```bash
 # Clone the repository
