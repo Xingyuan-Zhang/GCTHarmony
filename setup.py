@@ -16,7 +16,7 @@ setup(
     ],
     include_package_data=True,
     package_data={                          
-        "GCTHarmony": ["data/*", "data/**/*"]
+        "GCTHarmony": ["data/*"]
     },
     author='Xingyuan Zhang',
     description='LLM-based Cell Type Annotation Harmonization Tool',
