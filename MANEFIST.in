@@ -1,2 +1,1 @@
-include GCTHarmony/data/*
 recursive-include GCTHarmony/data *
