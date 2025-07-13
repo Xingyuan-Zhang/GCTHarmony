@@ -14,6 +14,10 @@ setup(
         'scipy',
         'openai'
     ],
+    include_package_data=True,
+    package_data={                          
+        "GCTHarmony": ["data/*", "data/**/*"]
+    },
     author='Xingyuan Zhang',
     description='LLM-based Cell Type Annotation Harmonization Tool',
     long_description=open("README.md").read(),
