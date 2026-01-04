@@ -98,23 +98,66 @@ def get_labels(clas):
     return labels     
 
 
-def merge_cell_types(ct1, ct2, owl_path=ONTOLOGY_PATH):
+def merge_cell_types(*cell_type_lists, owl_path=ONTOLOGY_PATH):
+    """
+    Merge/normalize cell types across 1..N lists by iteratively lifting terms to
+    nearest parents that already exist in the current union set, until convergence.
 
-    union_labels = set(ct1) | set(ct2)
+    Usage:
+      - merge_cell_types(ct1, ct2)
+      - merge_cell_types(ct1, ct2, ct3, ...)
+      - merge_cell_types(ct1)                      # one list
+      - merge_cell_types([ct1, ct2, ct3])          # list-of-lists
 
+    Returns:
+      - If one list provided -> a single mapped list
+      - If multiple lists provided -> a tuple of mapped lists (same order)
+    """
+
+    # -------------------------
+    # Normalize inputs
+    # -------------------------
+    if len(cell_type_lists) == 0:
+        raise ValueError("merge_cell_types requires at least one list of labels.")
+
+    # Allow merge_cell_types([list1, list2, ...])
+    if len(cell_type_lists) == 1 and isinstance(cell_type_lists[0], (list, tuple)):
+        maybe = cell_type_lists[0]
+        if len(maybe) > 0 and all(isinstance(x, (list, tuple)) for x in maybe):
+            lists = [list(x) for x in maybe]
+        else:
+            lists = [list(maybe)]
+    else:
+        lists = [list(x) for x in cell_type_lists]
+
+    # Quick return for empty inputs
+    if all(len(lst) == 0 for lst in lists):
+        return [] if len(lists) == 1 else tuple([[] for _ in lists])
+
+    # -------------------------
+    # Load ontology once
+    # -------------------------
     onto = get_ontology(owl_path).load()
 
+    # Build union of all labels (skip None)
+    union_labels = set()
+    for lst in lists:
+        union_labels |= {x for x in lst if x is not None}
+
+    # -------------------------
+    # Helpers
+    # -------------------------
     def find_nearest_parent(label, current_set):
-       
+        """Find the nearest parent (via is_a) whose label is already in current_set."""
         cls = onto.search_one(label=str(label))
         if cls is None:
             return None
 
-        q = deque([(cls, 0)])
+        q = deque([cls])
         seen = {cls}
 
         while q:
-            node, dist = q.popleft()
+            node = q.popleft()
             for parent in node.is_a:
                 if not isinstance(parent, ThingClass):
                     continue
@@ -122,14 +165,16 @@ def merge_cell_types(ct1, ct2, owl_path=ONTOLOGY_PATH):
                     continue
                 seen.add(parent)
 
-                lab = parent.label[0] if parent.label else parent.name
-                if lab in current_set:
-                    return lab
+                plab = parent.label[0] if getattr(parent, "label", None) else parent.name
+                if plab in current_set:
+                    return plab
 
-                q.append((parent, dist + 1))
+                q.append(parent)
 
         return None
 
+    # Iteratively lift everything to nearest parent in the *current* union set
+    # until convergence.
     while True:
         new_set = set()
         for lab in union_labels:
@@ -141,6 +186,7 @@ def merge_cell_types(ct1, ct2, owl_path=ONTOLOGY_PATH):
         union_labels = new_set
 
     def resolve(label):
+        """Map a label to the closest (lowest) ancestor that exists in final union_labels."""
         cls = onto.search_one(label=str(label))
         if cls is None:
             return label
@@ -150,7 +196,7 @@ def merge_cell_types(ct1, ct2, owl_path=ONTOLOGY_PATH):
 
         while q:
             node = q.popleft()
-            lab = node.label[0] if node.label else node.name
+            lab = node.label[0] if getattr(node, "label", None) else node.name
             if lab in union_labels:
                 return lab
             for parent in node.is_a:
@@ -160,10 +206,15 @@ def merge_cell_types(ct1, ct2, owl_path=ONTOLOGY_PATH):
 
         return label
 
-    mapped1 = [resolve(x) for x in ct1]
-    mapped2 = [resolve(x) for x in ct2]
+    # -------------------------
+    # Map each list
+    # -------------------------
+    mapped_lists = [[resolve(x) for x in lst] for lst in lists]
 
-    return mapped1, mapped2
+    # Return shape matches input style
+    if len(mapped_lists) == 1:
+        return mapped_lists[0]
+    return tuple(mapped_lists)
 
 if __name__ == '__main__':
     pass
